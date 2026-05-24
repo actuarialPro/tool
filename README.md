@@ -40,7 +40,6 @@ Scriptable Excel operations used in models and UAT:
 
 - **`externalref.bas`** — `ShowAndOpenExternalReferences` (Ctrl+Shift+Q): list external paths in the active cell’s formula and open or navigate to the chosen link
 - **`str.bas`** — `FStr` for lightweight string formatting
-- **`UAT.bas`** — manual test macros for `utils` (paths are machine-specific; edit before running)
 - **`getUserFormUI.bas`** — `ExportFormGeometryToCSV` for form layout export
 
 ## ImportExport
@@ -107,9 +106,7 @@ User-form builder modules (`createUserForm*.bas`, `CreateUserFormfrmGotoHistory.
 ## Requirements
 
 - Microsoft Excel with VBA macros enabled (`.xlsm`)
-- Windows paths in formulas and UAT macros assume a typical actuarial model layout; adapt paths as needed
+- Windows paths in formulas; adapt paths as needed
 - Python 3 + `oletools` only for `extractMacro.py`
 
-## License
-
-Not specified in this repository; add a license file if you intend to share or publish the code.
+## MIT License
