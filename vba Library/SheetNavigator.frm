@@ -1,5 +1,5 @@
 Attribute VB_Name = "SheetNavigator"
-Attribute VB_Base = "0{759ECDB8-BAAF-4AC9-B5A4-33EF008B1903}{542B406E-83A8-4489-B989-492B530E3964}"
+Attribute VB_Base = "0{6383F702-D8D1-4274-879A-300AF86212CF}{BB29D18B-EF23-4191-855A-F2E52F3C5972}"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
@@ -48,7 +48,8 @@ Private Sub RefreshSheetList()
     Next ws
     
     ' Auto-select first item so user can type keyword then press Enter
-    If lst.ListCount > 0 Then lst.ListIndex = mWb.ActiveSheet.Index - 1
+    If lst.ListCount > 0 Then lst.ListIndex = 0
+    If lst.ListCount > 0 And kw = "" Then lst.ListIndex = mWb.ActiveSheet.Index - 1
 End Sub
 
 Private Sub txtFilter_Change()

@@ -2,7 +2,7 @@ Attribute VB_Name = "lookupsimplify"
 Option Explicit
 
 ' GLOBAL CONFIGURATION: Set to True to see step-by-step parsing logs in the Immediate Window (Ctrl + G)
-Public Const DEBUG_MODE As Boolean = True
+Public Const DEBUG_MODE As Boolean = False
 
 Sub ConvertNestedLookupsToDirectReferences()
     Dim cell As Range
@@ -34,17 +34,19 @@ Sub ConvertNestedLookupsToDirectReferences()
             End If
             
             Do
-                Dim posV As Long, posX As Long, posI As Long
+                Dim posV As Long, posX As Long, posI As Long, posO As Long
                 
                 posV = FindKeywordPos(formulaStr, "VLOOKUP", maxStartPos)
                 posX = FindKeywordPos(formulaStr, "XLOOKUP", maxStartPos)
                 posI = FindKeywordPos(formulaStr, "INDEX", maxStartPos)
+                posO = FindKeywordPos(formulaStr, "OFFSET", maxStartPos)
                 
                 pos = 0
                 foundKeyword = ""
                 If posV > 0 Then pos = posV: foundKeyword = "VLOOKUP"
                 If posX > pos Then pos = posX: foundKeyword = "XLOOKUP"
                 If posI > pos Then pos = posI: foundKeyword = "INDEX"
+                If posO > pos Then pos = posO: foundKeyword = "OFFSET"
                 
                 If pos = 0 Then
                     If DEBUG_MODE Then Debug.Print "   -> No matching lookup keywords found in current string."
@@ -77,7 +79,7 @@ Sub ConvertNestedLookupsToDirectReferences()
             Loop
             
             If cell.formula <> formulaStr Then
-                cell.formula = formulaStr
+                cell.Formula2 = formulaStr
                 If DEBUG_MODE Then Debug.Print "[CELL] Written to sheet: " & cell.formula
             End If
         End If
@@ -150,7 +152,7 @@ Private Function GetDirectAddress(funcStr As String, ctxCell As Range) As String
     openParen = InStr(funcStr, "(")
     keyword = UCase(Trim(Left(funcStr, openParen - 1)))
     
-    If keyword = "XLOOKUP" Or keyword = "INDEX" Then
+    If keyword = "XLOOKUP" Or keyword = "INDEX" Or keyword = "OFFSET" Then
         evalStr = funcStr
     ElseIf keyword = "VLOOKUP" Then
         Dim innerArgs As String, args() As String

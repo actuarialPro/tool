@@ -2,7 +2,7 @@ Attribute VB_Name = "ifsimplify"
 Option Explicit
 
 ' Set to True to watch the Outside-In onion peeling process in the Immediate Window (Ctrl + G)
-Public Const DEBUG_IF_MODE As Boolean = True
+Public Const DEBUG_IF_MODE As Boolean = False
 
 Sub SimplifyIFFormulas()
     Dim cell As Range
@@ -61,7 +61,7 @@ Sub SimplifyIFFormulas()
             Loop
             
             If cell.formula <> formulaStr Then
-                cell.formula = formulaStr
+                cell.Formula2 = formulaStr
                 If DEBUG_IF_MODE Then Debug.Print "[CELL] Final Output Written: " & cell.formula
             End If
         End If

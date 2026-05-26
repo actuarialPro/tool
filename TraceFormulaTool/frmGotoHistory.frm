@@ -1,5 +1,5 @@
 Attribute VB_Name = "frmGotoHistory"
-Attribute VB_Base = "0{AF8AE938-40F0-4FC4-BD53-AF6250152C65}{767A0AF1-975B-4FB9-A7E6-CE455204B186}"
+Attribute VB_Base = "0{CC15725A-4F48-4608-BE19-CA42AF6259D5}{14C2CC39-8E16-48A8-86CD-8A4D0266A067}"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
@@ -9,13 +9,17 @@ Attribute VB_Customizable = False
 Option Explicit
 
 Private Sub UserForm_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
-
 End Sub
 
 Private Sub UserForm_Initialize()
     ' Initialize global stack on first run if it doesn't exist yet
     If g_HistoryStack Is Nothing Then Set g_HistoryStack = New Collection
     
+    ' --- CONFIGURE MULTI-COLUMN INTERFACE LAYOUT ---
+    With lstHistory
+        .ColumnCount = 2
+        .ColumnWidths = "280 pt;60 pt"
+    End With
     ' Reload existing history elements from the Excel session memory
     RefreshListBox
     lblStatus.Caption = "Ready"
@@ -28,13 +32,6 @@ Private Sub UserForm_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift
         Exit Sub
     End If
     
-    ' 2. ALT + LEFT ARROW KEY -> Trigger the Back functionality
-    ' (Shift = 4 means the Alt key is being held down)
-    If Shift = 4 And KeyCode = vbKeyLeft Then
-        KeyCode = 0 ' Consume the key event
-        btnBack_Click
-        Exit Sub
-    End If
 End Sub
 
 ' --- ENTER KEY HANDLING ---
@@ -52,6 +49,7 @@ End Sub
 
 ' --- ADD CURRENT SELECTION BUTTON CLICK (UPGRADE A) ---
 Private Sub btnAddCurrent_Click()
+    txtAddress.SetFocus
     ' Ensure the user's active focus is actually an Excel cell selection range
     If TypeOf Selection Is Range Then
         PushToGlobalStack Selection
@@ -64,9 +62,10 @@ End Sub
 
 ' --- GO TO BUTTON CLICK ---
 Private Sub btnGoto_Click()
+    txtAddress.SetFocus
     Dim addressInput As String
     addressInput = Trim(txtAddress.Text)
-    
+
     If addressInput = "" Then
         lblStatus.Caption = "Please enter a valid address or Named Range."
         Exit Sub
@@ -94,7 +93,7 @@ Private Sub btnGoto_Click()
     
     ' Execute navigation
     On Error Resume Next
-    Application.Goto targetRange, Scroll:=True
+    Application.Goto targetRange, Scroll:=False
     If Err.Number <> 0 Then
         lblStatus.Caption = "Error navigating: " & Err.Description
         On Error GoTo 0
@@ -112,6 +111,7 @@ End Sub
 
 ' --- BACK BUTTON CLICK (UNWIND STACK) ---
 Private Sub btnBack_Click()
+    txtAddress.SetFocus
     Dim selectedIndex As Long
     selectedIndex = lstHistory.listIndex
     
@@ -129,7 +129,7 @@ Private Sub btnBack_Click()
     
     ' Navigate back
     On Error Resume Next
-    Application.Goto targetRange, Scroll:=True
+    Application.Goto targetRange, Scroll:=False
     If Err.Number <> 0 Then
         lblStatus.Caption = "Could not navigate; worksheet may be deleted or locked."
         On Error GoTo 0
@@ -161,23 +161,29 @@ Private Sub lstHistory_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     Set targetRange = item(1)
     
     On Error Resume Next
-    Application.Goto targetRange, Scroll:=True
+    Application.Goto targetRange, Scroll:=False
     If Err.Number <> 0 Then
         lblStatus.Caption = "Error peeking at range."
     Else
         lblStatus.Caption = "Peeked at: " & item(0) & " (Stack unchanged)"
     End If
     On Error GoTo 0
+    ' --- THE FIX: Shift focus back so arrow keys work immediately ---
+    On Error Resume Next
+    AppActivate Application.Caption
+    On Error GoTo 0
 End Sub
 
 ' --- CLEAR ALL BUTTON ---
 Private Sub btnClearAll_Click()
+    txtAddress.SetFocus
     Set g_HistoryStack = New Collection
     RefreshListBox
     lblStatus.Caption = "Global session history cleared."
 End Sub
 ' --- CLEAR ALL BUTTON ---
 Private Sub btnSimplifyFormula_Click()
+    txtAddress.SetFocus
     SimplifyIFFormulas
     ConvertNestedLookupsToDirectReferences
 End Sub
@@ -210,8 +216,25 @@ Private Sub RefreshListBox()
     If g_HistoryStack Is Nothing Then Exit Sub
     
     Dim item As Variant
+    Dim targetRange As Range
+    Dim previewText As String
+    Dim listIdx As Long
     For Each item In g_HistoryStack
-        lstHistory.AddItem item(0) ' Expose only the readable address text to the user
+        ' item(0) = Address String, item(1) = Range Object
+        Set targetRange = item(1)
+        
+        ' Safely extract the visible text string of only the FIRST cell
+        On Error Resume Next
+        previewText = targetRange.Cells(1, 1).Text
+        If Err.Number <> 0 Then previewText = "[Unreadable]"
+        On Error GoTo 0
+        lstHistory.AddItem item(0)
+        
+        ' Identify the index row we just created
+        listIdx = lstHistory.ListCount - 1
+        
+        ' Assign our preview string to Column 1 (the second column, 0-indexed)
+        lstHistory.List(listIdx, 1) = previewText
     Next item
 End Sub
 

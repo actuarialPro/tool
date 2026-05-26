@@ -1,5 +1,5 @@
 Attribute VB_Name = "Bookmarks"
-Attribute VB_Base = "0{715F15EF-39EF-4417-84AD-2DD69BEAD301}{EE773B5E-5AA7-419D-A66B-2F1299E39931}"
+Attribute VB_Base = "0{55B75D86-F06F-4580-A538-05FFF3AEB40A}{CA077123-3D01-4628-9B62-9431F0D33AF5}"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True

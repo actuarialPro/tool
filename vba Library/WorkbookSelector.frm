@@ -1,5 +1,5 @@
 Attribute VB_Name = "WorkbookSelector"
-Attribute VB_Base = "0{82B27D06-3ACB-4DD5-B7FD-4B494904684F}{B0439A2F-C0BE-4FD9-B97A-EC509B7D1D08}"
+Attribute VB_Base = "0{9B0885B7-248B-40DE-82FD-E1C9CFF1677F}{831C7969-3EB0-4F4A-93E1-B169FD9C1EC1}"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
