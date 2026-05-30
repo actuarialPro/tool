@@ -1,5 +1,5 @@
 Attribute VB_Name = "SheetNavigator"
-Attribute VB_Base = "0{6383F702-D8D1-4274-879A-300AF86212CF}{BB29D18B-EF23-4191-855A-F2E52F3C5972}"
+Attribute VB_Base = "0{5B8107B7-7E4D-4D60-8188-FF5C8DF523A7}{74C0F7F2-B25F-4460-9F6B-BD990B74ACC9}"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
@@ -49,7 +49,15 @@ Private Sub RefreshSheetList()
     
     ' Auto-select first item so user can type keyword then press Enter
     If lst.ListCount > 0 Then lst.ListIndex = 0
-    If lst.ListCount > 0 And kw = "" Then lst.ListIndex = mWb.ActiveSheet.Index - 1
+    ' Safely highlight the ActiveSheet by name when no filter is applied
+        If lst.ListCount > 0 And kw = "" Then
+            For i = 0 To lst.ListCount - 1
+                If lst.List(i, 0) = mWb.ActiveSheet.name Then
+                    lst.ListIndex = i
+                    Exit For
+                End If
+            Next i
+        End If
 End Sub
 
 Private Sub txtFilter_Change()

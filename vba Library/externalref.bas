@@ -130,7 +130,7 @@ Sub ShowAndOpenExternalReferences()
     ' Open the workbook
     If InStr(selectedPath, "\") > 0 Then
         On Error Resume Next
-        Set wb = Workbooks.Open(filepath)
+        Set wb = Workbooks.Open(filepath, addtomru:=True)
         On Error GoTo 0
         
         If wb Is Nothing Then

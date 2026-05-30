@@ -191,10 +191,29 @@ Private Function GetDirectAddress(funcStr As String, ctxCell As Range) As String
     
     If Not evalResult Is Nothing Then
         If TypeOf evalResult Is Range Then
-            Dim r As Range, sheetName As String
+            Dim r As Range
+            Dim targetSheet As Worksheet, ctxSheet As Worksheet
+            Dim targetWb As Workbook, ctxWb As Workbook
+            
             Set r = evalResult
-            sheetName = r.Worksheet.Name
-            GetDirectAddress = "'" & sheetName & "'!" & r.Address(False, False)
+            Set targetSheet = r.Worksheet
+            Set targetWb = targetSheet.Parent
+            
+            Set ctxSheet = ctxCell.Worksheet
+            Set ctxWb = ctxSheet.Parent
+            
+            ' Determine the scope of the resolved address
+            If targetWb.Name <> ctxWb.Name Then
+                ' 1. External Workbook
+                GetDirectAddress = "'[" & targetWb.Name & "]" & targetSheet.Name & "'!" & r.Address(False, False)
+            ElseIf targetSheet.Name <> ctxSheet.Name Then
+                ' 2. Same Workbook, Different Worksheet
+                GetDirectAddress = "'" & targetSheet.Name & "'!" & r.Address(False, False)
+            Else
+                ' 3. Same Workbook, Same Worksheet
+                GetDirectAddress = r.Address(False, False)
+            End If
+            
             If DEBUG_MODE Then Debug.Print "      [GetDirectAddress] Successfully resolved object address to: " & GetDirectAddress
         Else
             If DEBUG_MODE Then Debug.Print "      [GetDirectAddress] Warning: Evaluation returned data, but it was not a valid Range mapping."

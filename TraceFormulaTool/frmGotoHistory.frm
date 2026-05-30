@@ -1,5 +1,5 @@
 Attribute VB_Name = "frmGotoHistory"
-Attribute VB_Base = "0{CC15725A-4F48-4608-BE19-CA42AF6259D5}{14C2CC39-8E16-48A8-86CD-8A4D0266A067}"
+Attribute VB_Base = "0{D91A1700-93A3-4A0E-8590-100C8E4BD514}{74775D9B-2E6D-40BB-8042-DF798E7676B9}"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
@@ -7,6 +7,15 @@ Attribute VB_Exposed = False
 Attribute VB_TemplateDerived = False
 Attribute VB_Customizable = False
 Option Explicit
+
+Private Sub btnTrace_Click()
+Dim original_range_name As String
+original_range_name = ActiveCell.Address(False, False, , True)
+
+frmPrecedencyTracer.Show
+
+If original_range_name <> ActiveCell.Address(False, False, , True) Then btnAddCurrent_Click
+End Sub
 
 Private Sub UserForm_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
 End Sub

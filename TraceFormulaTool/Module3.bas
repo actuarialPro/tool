@@ -4,3 +4,4 @@ Sub GotoHistory()
 Attribute GotoHistory.VB_ProcData.VB_Invoke_Func = "H\n14"
 frmGotoHistory.Show vbModeless
 End Sub
+

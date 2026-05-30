@@ -1,5 +1,5 @@
 Attribute VB_Name = "RecentWB"
-Attribute VB_Base = "0{B06F5BBF-0A85-45E5-8D21-4246474BD746}{920EFE74-10EF-45CB-9CF4-9DB185EBD547}"
+Attribute VB_Base = "0{794D4E6A-8D04-45FD-8BE8-2F44CFF41028}{59206059-25A3-4319-8467-C83FB97B2928}"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
